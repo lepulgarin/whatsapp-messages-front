@@ -1,0 +1,17 @@
+:host {
+  height: 100%;
+}
+
+::ng-deep {
+  .p-button-label {
+    flex: 0;
+    white-space: nowrap;
+  }
+  .p-button {
+    justify-content: center;
+  }
+  .form__button {
+    width: 100%;
+    margin-top: 5px;
+  }
+}

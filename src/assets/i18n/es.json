@@ -1,0 +1,55 @@
+{
+  "validators": {
+    "required": "{{field}} es requerido.",
+    "email": "Correo no válido.",
+    "pattern": "{{field}} con formato inválido.",
+    "minlength": "{{field}} minimo 8 caracteres.",
+    "customValidation": "Here will be custom message for your custom validation."
+  },
+  "fields": {
+    "email": "Correo",
+    "first_name": "Nombre",
+    "last_name": "Apellido",
+    "password": "Contraseña",
+    "passwordValidate": "Confirmar Contraseña"
+  },
+  "login": {
+    "title": "¡Hola! Ingresa tu usuario",
+    "button": "Ingresar",
+    "forgot": "La olvidaste, ¿cierto?",
+    "register": "Regístrate",
+    "forgotEmail": "Enviar correo de recuperación",
+    "forgotTitle": "Necesitamos tu dirección de correo electrónico para que puedas acceder a tu cuenta, luego te enviaremos un correo de recuperación.",
+    "logout": "Cerrar sesión"
+  },
+  "register": {
+    "title": "¡Registrate! Crea aquí tu cuenta nueva",
+    "termsAndConditions": "Acepto Términos y condiciones",
+    "createAccount": "Crear cuenta"
+  },
+  "general": {
+    "back": "Volver"
+  },
+  "httpErrors": {
+    "400": "El servidor no puede procesar la petición por un error de sintaxis del cliente.",
+    "403": "Acceso denegado.",
+    "404": "No se encuentra la petición.",
+    "405": "Se ha hecho una petición con un recurso no soportado por ese recurso (GET, POST, PUT, DELETE).",
+    "500": "Error inesperado en el servidor.",
+    "501": "El servidor o no reconoce el método del la petición o carece de la capacidad para completarlo.",
+    "502": "El servidor está actuando como una puerta de enlace o proxy y ha recibido una respuesta no válida del otro servidor.",
+    "503": "El servidor no esta disponible.",
+    "504": "El tiempo de espera para la petición se ha excedido."
+  },
+  "menu": {
+    "dashboard": "Tablero",
+    "products": "Productos"
+  },
+  "theme": {
+    "changeTheme": "Cambiar tema"
+  },
+  "language": {
+    "es": "Español",
+    "en": "Inglés"
+  }
+}

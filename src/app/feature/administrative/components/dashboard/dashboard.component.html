@@ -1,0 +1,158 @@
+<div class="container">
+  <div class="card w-full">
+    <h1 class="subtittle text-center">
+      <strong> Enviar whatsapp </strong>
+    </h1>
+    <div class="flex mb-4 gap-3">
+      <form class="form w-6" [formGroup]="wsForm" (ngSubmit)="sendMessage()">
+        <div class="form__control">
+          <div class="p-inputgroup">
+            <p-editor
+              formControlName="message"
+              styleClass="w-full h-18rem"
+              class="w-12 h-20rem">
+              <ng-template pTemplate="header">
+                <div class="flex">
+                  <span class="ql-formats">
+                    <button
+                      type="button"
+                      class="ql-bold"
+                      aria-label="Bold"></button>
+                    <button
+                      type="button"
+                      class="ql-italic"
+                      aria-label="Italic"></button>
+                  </span>
+                  <button
+                    class="ml-auto"
+                    aria-label="Download"
+                    pTooltip="Elegir mensaje"
+                    (click)="messages.toggle($event)">
+                    <i
+                      class="pi pi-download text-color-secondary hover:text-900"></i>
+                  </button>
+                  <button
+                    aria-label="Save"
+                    pTooltip="Guardar mensaje"
+                    *ngIf="message"
+                    (click)="storeMessage()">
+                    <i
+                      class="pi pi-save text-color-secondary hover:text-900"></i>
+                  </button>
+                  <button
+                    aria-label="Clean"
+                    pTooltip="Limpiar mensaje"
+                    *ngIf="currentMessage"
+                    (click)="cleanMessage()">
+                    <i
+                      class="pi pi-trash text-color-secondary hover:text-900"></i>
+                  </button>
+                </div>
+              </ng-template>
+            </p-editor>
+          </div>
+        </div>
+        <div class="form__control">
+          <p-checkbox
+            [binary]="true"
+            inputId="binary"
+            label="Enviar imagen"
+            formControlName="sendImage"></p-checkbox>
+        </div>
+        <div class="form__control">
+          <button
+            pButton
+            label="Enviar mensaje"
+            type="submit"
+            class="w-full"></button>
+        </div>
+      </form>
+      <div class="w-6 text-left p-2">
+        <img
+          alt="current image"
+          *ngIf="showImage"
+          class="w-full w-full h-15rem"
+          [src]="imgUrl" />
+        <div>
+          <div class="form__control">
+            <p-fileUpload
+              #fileUpload
+              styleClass="w-full white-space-nowrap overflow-hidden text-overflow-ellipsis"
+              mode="basic"
+              chooseLabel="Seleccionar imagen"
+              name="demo[]"
+              accept="image/*"
+              [maxFileSize]="1000000"
+              (onSelect)="onUpload($event)"></p-fileUpload>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="mb-3">
+        <button
+          pButton
+          (click)="addClient()"
+          class="p-button-outlined p-button-sm p-button-primary">
+          <i class="pi pi-plus mr-2"></i> Nuevo
+        </button>
+      </div>
+      <p-table
+        [value]="clients"
+        [tableStyle]="{ 'min-width': '50rem' }"
+        styleClass="border-1 border-200  border-round overflow-hidden p-datatable-sm">
+        <ng-template pTemplate="header">
+          <tr>
+            <th id="check">
+              <p-checkbox
+                [binary]="true"
+                inputId="binary"
+                [(ngModel)]="sendAll"
+                (ngModelChange)="toggleSendAll()"></p-checkbox>
+            </th>
+            <th id="name">Nombre</th>
+            <th id="phone">Teléfono</th>
+            <th id="address">Dirección</th>
+            <th id="value">Valor</th>
+            <th id="address">Acciones</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-client>
+          <tr>
+            <td>
+              <p-checkbox
+                [binary]="true"
+                inputId="binary"
+                [(ngModel)]="client.send"></p-checkbox>
+            </td>
+            <td>{{ client.name }}</td>
+            <td>{{ client.phone }}</td>
+            <td>{{ client.address }}</td>
+            <td>{{ client.value }}</td>
+            <td>
+              <button
+                pButton
+                (click)="removeClient(client.id)"
+                class="p-button-icon p-button p-button-danger p-button-sm p-button-text p-button-rounded"
+                icon="pi pi-trash"></button>
+              <button
+                pButton
+                (click)="editClient(client)"
+                class="p-button-icon p-button p-button-primary p-button-sm p-button-text p-button-rounded"
+                icon="pi pi-pencil"></button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>
+
+<p-overlayPanel
+  #messages
+  styleClass="max-w-25rem overflow-y-auto"
+  [style]="{ 'max-height': '70%' }">
+  <ng-template pTemplate="content">
+    <app-messages (seletedMessage)="selectMessageEvent($event)"></app-messages>
+  </ng-template>
+</p-overlayPanel>

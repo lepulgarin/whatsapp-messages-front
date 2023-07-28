@@ -1,0 +1,14 @@
+.card-container {
+    background-color: var(--surface-card);
+    overflow: hidden;
+    border-radius: var(--border-radius);
+    width: 100%;
+}
+
+.card {
+    background-color: var(--surface-card);
+    box-shadow: var(--shadow-card);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    padding: var(--spacing-double);
+}

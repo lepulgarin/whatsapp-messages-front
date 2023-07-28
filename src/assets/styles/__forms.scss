@@ -1,0 +1,41 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  &__control {
+    width: 100%;
+    margin-block: 10px;
+    &__show-password {
+      cursor: pointer;
+      z-index: 10;
+      :hover {
+        color: var(--primary-color);
+      }
+    }
+  }
+  &__separator {
+    margin-block: 20px;
+    &::after, &::before {
+      content: '----';
+    }
+  }
+  &__link {
+    text-decoration: none;
+    color: var(--primary-color);
+    width: 100%;
+    cursor: pointer;
+    margin-bottom: 20px;
+  }
+  &__terms {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    margin-bottom: 15px;
+    width: 100%;
+    &__link {
+      color: var(--primary-color);
+      width: 100%;
+      margin-left: 10px;
+    }
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "validators": {
+    "required": "{{field}} is required.",
+    "email": "Invalid email.",
+    "pattern": "{{field}} has invalid format.",
+    "minlength": "{{field}} minimum 8 characters.",
+    "customValidation": "Here will be custom message for your custom validation."
+  },
+  "fields": {
+    "email": "Email",
+    "first_name": "First Name",
+    "last_name": "Last Name",
+    "password": "Password",
+    "passwordValidate": "Confirm Password"
+  },
+  "login": {
+    "title": "Hello! Enter your user",
+    "button": "Enter",
+    "forgot": "You forgot it, right?",
+    "register": "Register",
+    "forgotEmail": "Send recovery email",
+    "forgotTitle": "We need your email address so you can access your account, then we will send you a recovery email.",
+    "logout": "Logout"
+  },
+  "register": {
+    "title": "Register! Create your new account here",
+    "termsAndConditions": "I accept Terms and Conditions",
+    "createAccount": "Create account"
+  },
+  "general": {
+    "back": "Back"
+  },
+  "httpErrors": {
+    "400": "The server cannot process the request due to a client error.",
+    "403": "Access denied.",
+    "404": "The request could not be found.",
+    "405": "A request was made with a resource not supported by that resource (GET, POST, PUT, DELETE).",
+    "500": "Unexpected error on the server.",
+    "501": "The server either does not recognize the request method or lacks the ability to complete it.",
+    "502": "The server is acting as a gateway or proxy and has received an invalid response from the other server.",
+    "503": "The server is unavailable.",
+    "504": "The request timeout has been exceeded."
+  },
+  "menu": {
+    "dashboard": "Dashboard",
+    "products": "Products"
+  },
+  "theme": {
+    "changeTheme": "Change theme"
+  },
+  "language": {
+    "es": "Spanish",
+    "en": "English"
+  }
+}

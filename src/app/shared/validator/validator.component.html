@@ -1,0 +1,20 @@
+<div [ngClass]="{ show: control.dirty || control.touched }" class="validator">
+  <ng-container *ngIf="control.errors?.['required']; else else1">
+    <p>{{ message(control.errors) | translate : { field: name } }}</p>
+  </ng-container>
+  <ng-template #else1>
+    <ng-container *ngIf="control.errors?.['minlength']; else else2">
+      <p>{{ message(control.errors) | translate : { field: name } }}</p>
+    </ng-container>
+  </ng-template>
+  <ng-template #else2>
+    <ng-container *ngIf="control.errors?.['email']; else else3">
+      <p>{{ message(control.errors) | translate : { field: name } }}</p>
+    </ng-container>
+  </ng-template>
+  <ng-template #else3>
+    <ng-container *ngIf="control.errors?.['pattern']">
+      <p>{{ message(control.errors) | translate : { field: name } }}</p>
+    </ng-container>
+  </ng-template>
+</div>

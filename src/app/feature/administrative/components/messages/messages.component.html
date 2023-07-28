@@ -1,0 +1,21 @@
+<ng-container *ngIf="messages.length; else nodata">
+  <div
+    *ngFor="let message of messages"
+    class="p-3 hover:surface-ground cursor-pointer"
+    (click)="selectMessage(message.id)">
+    <div class="p-mr-2 flex">
+      <i class="pi pi-info-circle p-text-info"></i>
+      <i
+        class="pi pi-trash ml-auto text-red-200 hover:text-red-700"
+        (click)="deleteMessage(message.id)"></i>
+    </div>
+    <div [innerHTML]="message.message"></div>
+  </div>
+</ng-container>
+
+<ng-template #nodata>
+  <div class="p-3">
+    <p class="font-bold">No hay mensajes guardados</p>
+  </div>
+</ng-template>
+

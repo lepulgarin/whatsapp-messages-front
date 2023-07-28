@@ -1,0 +1,16 @@
+div.validator {
+  display: none;
+  margin-top: 5px;
+
+  &.show {
+    display: block;
+  }
+
+  p {
+    color: var(--red-500);
+    font-size: 12px;
+    margin: 0;
+    text-align: left;
+    font-weight: 500;
+  }
+}

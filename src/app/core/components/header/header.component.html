@@ -1,0 +1,53 @@
+<header>
+  <div class="header">
+    <div class="header__container">
+      <div class="header__container__app">
+        <div class="header__container__app__menu">
+          <p-image
+            class="cursor-pointer"
+            [routerLink]="['/']"
+            src="assets/img/softnia.png"
+            alt="Logo"
+            width="160"></p-image>
+        </div>
+        <div
+          class="header__container__app__actions flex align-items-center flex gap-3">
+          <div class="flex align-items-center cursor-pointer gap-1" (click)="lang.toggle($event)">
+            <i class="pi pi-globe text-3xl"> </i>
+            <p class="m-0">
+              {{ translateService.currentLang }}
+            </p>
+            <i class="pi pi-caret-down text-sm"></i>
+            <p-overlayPanel #lang [style]="{ width: '120px' }">
+              <ng-template pTemplate="content">
+                <div
+                  class="py-3 hover:surface-hover px-2 cursor-pointer text-small"
+                  (click)="toggleLanguage('es'); lang.toggle($event)">
+                  {{ 'language.es' | translate }}
+                </div>
+                <div
+                  class="py-3 hover:surface-hover px-2 cursor-pointer text-small"
+                  (click)="toggleLanguage('en'); lang.toggle($event)">
+                  {{ 'language.en' | translate }}
+                </div>
+              </ng-template>
+            </p-overlayPanel>
+          </div>
+          <div class="px-2 py-2 flex gap-3 justify-content-center">
+            <div
+              class="flex justify-content-center align-items-center theme hover:surface-800">
+              <i
+                *ngIf="!darkMode"
+                class="pi pi-moon cursor-pointer p-0"
+                (click)="toggleTheme('lara-dark-blue')"></i>
+              <i
+                *ngIf="darkMode"
+                class="pi pi-sun cursor-pointer p-0"
+                (click)="toggleTheme('lara-light-blue')"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
