@@ -38,7 +38,6 @@ export class DashboardComponent {
 
   ngOnInit(): void {
     this.obtainMessage();
-    this.detectMessageChanges();
     this.obtainClients();
     this.downloadImage();
   }
@@ -50,20 +49,6 @@ export class DashboardComponent {
   private obtainClients(): void {
     const clients = JSON.parse(localStorage.getItem('clients') ?? '[]');
     this.clients = clients;
-  }
-
-  private detectMessageChanges(): void {
-    this.wsForm.get('message')?.valueChanges.subscribe({
-      next: (changes: string) => {
-        console.log(changes);
-        console.log(changes.includes('@'));
-        if (!changes.includes('@')) return;
-        var htmlToInsert = "<p>here is some <strong>awesome</strong> text</p>"
-        const html = document.getElementsByClassName('ql-editor')[0];
-        console.log(html);
-        html.innerHTML = htmlToInsert
-      },
-    });
   }
 
   public storeMessage(): void {
