@@ -11,6 +11,7 @@ export class DynamicDialogService {
       styleClass: 'login-dialog',
       header: options.title || '',
       data: options.data,
+      ...options
     });
   }
 

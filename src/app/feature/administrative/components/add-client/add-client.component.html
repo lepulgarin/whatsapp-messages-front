@@ -1,5 +1,5 @@
-<form [formGroup]="clientForm" (ngSubmit)="submitForm()" class="form w-20rem">
-  <div class="form__control">
+<form [formGroup]="clientForm" (ngSubmit)="submitForm()" class="formgrid grid">
+  <div class="field md:col-6 col-12">
     <div class="p-inputgroup">
       <input
         type="text"
@@ -8,34 +8,88 @@
         formControlName="name" />
     </div>
   </div>
-  <div class="form__control">
+  <div class="field md:col-6 col-12">
     <div class="p-inputgroup">
       <input
-        type="number"
+        type="text"
         pInputText
         placeholder="Teléfono"
         formControlName="phone" />
     </div>
   </div>
-  <div class="form__control">
+  <div class="field md:col-6 col-12">
     <div class="p-inputgroup">
       <input
         type="text"
         pInputText
-        placeholder="Dirección"
-        formControlName="address" />
+        placeholder="Correo electrónico"
+        formControlName="email" />
     </div>
   </div>
-  <div class="form__control">
+  <div class="field md:col-6 col-12">
     <div class="p-inputgroup">
       <input
         type="text"
         pInputText
-        placeholder="Valor"
+        placeholder="Fecha"
+        formControlName="date" />
+    </div>
+  </div>
+  <div class="field md:col-6 col-12">
+    <div class="p-inputgroup">
+      <input
+        type="text"
+        pInputText
+        placeholder="Valor a abonar"
         formControlName="value" />
     </div>
   </div>
-  <div class="form__control">
+  <div class="field md:col-6 col-12">
+    <div class="p-inputgroup">
+      <input
+        type="text"
+        pInputText
+        placeholder="Valor a cancelar"
+        formControlName="paymentValue" />
+    </div>
+  </div>
+  <div class="field md:col-6 col-12">
+    <div class="p-inputgroup">
+      <input
+        type="text"
+        pInputText
+        placeholder="Valor del contrato"
+        formControlName="contractValue" />
+    </div>
+  </div>
+  <div class="field md:col-6 col-12">
+    <div class="p-inputgroup">
+      <input
+        type="text"
+        pInputText
+        placeholder="Variable 1"
+        formControlName="var1" />
+    </div>
+  </div>
+  <div class="field md:col-6 col-12">
+    <div class="p-inputgroup">
+      <input
+        type="text"
+        pInputText
+        placeholder="Variable 2"
+        formControlName="var2" />
+    </div>
+  </div>
+  <div class="field md:col-6 col-12">
+    <div class="p-inputgroup">
+      <input
+        type="text"
+        pInputText
+        placeholder="Variable 3"
+        formControlName="var3" />
+    </div>
+  </div>
+  <div class="field col-12 flex">
     <button pButton type="submit" class="p-button p-button-primary w-full">
       {{!edit? 'Agregar' : 'Editar'}}
     </button>

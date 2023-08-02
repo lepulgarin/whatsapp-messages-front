@@ -9,7 +9,10 @@
           <div class="p-inputgroup">
             <p-editor
               formControlName="message"
-              styleClass="w-full h-18rem"
+              styleClass="w-full h-13rem"
+              (onSelectionChange)="onSelectionChange($event)"
+              (onTextChange)="onTextChange($event)"
+              (onInit)="onInit($event)"
               class="w-12 h-20rem">
               <ng-template pTemplate="header">
                 <div class="flex">
@@ -27,6 +30,7 @@
                     class="ml-auto"
                     aria-label="Download"
                     pTooltip="Elegir mensaje"
+                    type="button"
                     (click)="messages.toggle($event)">
                     <i
                       class="pi pi-download text-color-secondary hover:text-900"></i>
@@ -35,6 +39,7 @@
                     aria-label="Save"
                     pTooltip="Guardar mensaje"
                     *ngIf="message"
+                    type="button"
                     (click)="storeMessage()">
                     <i
                       class="pi pi-save text-color-secondary hover:text-900"></i>
@@ -43,10 +48,24 @@
                     aria-label="Clean"
                     pTooltip="Limpiar mensaje"
                     *ngIf="currentMessage"
+                    type="button"
                     (click)="cleanMessage()">
                     <i
                       class="pi pi-trash text-color-secondary hover:text-900"></i>
                   </button>
+                </div>
+                <div class="flex flex-wrap mt-3 gap-2">
+                  <p
+                    *ngFor="let variable of variables"
+                    class="m-0 text-xs bg-primary border-round px-2 py-1 cursor-pointer hover:shadow-3"
+                    [pTooltip]="variable.value"
+                    tooltipPosition="top"
+                    [showDelay]="700"
+                    (click)="addVariableToText(variable.value)">
+                    <span>
+                      {{ variable.name }}
+                    </span>
+                  </p>
                 </div>
               </ng-template>
             </p-editor>
@@ -89,18 +108,40 @@
       </div>
     </div>
     <div>
-      <div class="mb-3">
+      <div class="mb-3 flex">
         <button
+          type="button"
           pButton
+          icon="pi pi-plus mr-2"
           (click)="addClient()"
           class="p-button-outlined p-button-sm p-button-primary">
-          <i class="pi pi-plus mr-2"></i> Nuevo
+          Nuevo
+        </button>
+        <button
+          type="button"
+          pButton
+          icon="pi pi-file-excel mr-2"
+          (click)="exportToExcel()"
+          class="p-button-success p-button-outlined p-button-sm ml-2">
+          Exportar
+        </button>
+        <button
+          pButton
+          class="p-button-help p-button-outlined p-button-sm ml-2 relative">
+          <i class="pi pi-file-excel mr-2 cursor-pointer"></i>
+          Importar
+          <input
+            (change)="onFileChange($event)"
+            accept=".xlsx, .xls"
+            type="file"
+            class="w-full opacity-0 absolute top-0 bottom-0 cursor-pointer"
+            style="font-size: 0" />
         </button>
       </div>
       <p-table
         [value]="clients"
         [tableStyle]="{ 'min-width': '50rem' }"
-        styleClass="border-1 border-200  border-round overflow-hidden p-datatable-sm">
+        styleClass="border-1 border-200  border-round overflow-hidden p-datatable-md">
         <ng-template pTemplate="header">
           <tr>
             <th id="check">
@@ -112,9 +153,15 @@
             </th>
             <th id="name">Nombre</th>
             <th id="phone">Teléfono</th>
-            <th id="address">Dirección</th>
-            <th id="value">Valor</th>
-            <th id="address">Acciones</th>
+            <th id="email">Correo</th>
+            <th id="date">Fecha</th>
+            <th id="value">Valor abono</th>
+            <th id="paymentValue">Valor cancelar</th>
+            <th id="contractValue">Valor contrato</th>
+            <th id="var1">Var 1</th>
+            <th id="var2">Var 2</th>
+            <th id="var3">Var 3</th>
+            <th id="actions">Acciones</th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-client>
@@ -127,18 +174,24 @@
             </td>
             <td>{{ client.name }}</td>
             <td>{{ client.phone }}</td>
-            <td>{{ client.address }}</td>
-            <td>{{ client.value }}</td>
+            <td>{{ client.email }}</td>
+            <td>{{ client.date }}</td>
+            <td>{{ client.value | currency: '$':'symbol':'1.0-0' }}</td>
+            <td>{{ client.paymentValue | currency: '$':'symbol':'1.0-0' }}</td>
+            <td>{{ client.contractValue | currency: '$':'symbol':'1.0-0' }}</td>
+            <td>{{ client.var1 }}</td>
+            <td>{{ client.var2 }}</td>
+            <td>{{ client.var3 }}</td>
             <td>
               <button
                 pButton
                 (click)="removeClient(client.id)"
-                class="p-button-icon p-button p-button-danger p-button-sm p-button-text p-button-rounded"
+                class="p-2 w-2rem h-2rem p-button-icon p-button p-button-danger p-button-sm p-button-text p-button-rounded"
                 icon="pi pi-trash"></button>
               <button
                 pButton
                 (click)="editClient(client)"
-                class="p-button-icon p-button p-button-primary p-button-sm p-button-text p-button-rounded"
+                class="p-2 w-2rem h-2rem p-button-icon p-button p-button-primary p-button-sm p-button-text p-button-rounded"
                 icon="pi pi-pencil"></button>
             </td>
           </tr>

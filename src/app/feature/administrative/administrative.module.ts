@@ -17,6 +17,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { MessagesComponent } from './components/messages/messages.component';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { IdGeneratorService } from './shared/services/id-generator.service';
+import { InputNumberModule } from 'primeng/inputnumber';
 
 @NgModule({
   declarations: [DashboardComponent, AddClientComponent, MessagesComponent],
@@ -34,6 +35,7 @@ import { IdGeneratorService } from './shared/services/id-generator.service';
     CheckboxModule,
     TooltipModule,
     OverlayPanelModule,
+    InputNumberModule,
   ],
   providers: [WsService, IdGeneratorService],
 })
