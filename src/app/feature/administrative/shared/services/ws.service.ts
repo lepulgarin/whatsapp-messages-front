@@ -29,12 +29,11 @@ export class WsService {
     return this.httpService.doGet('http://localhost:3001/lead/status');
   }
 
-  public obtainQr(): void {
-    this.httpService
+  public obtainQr(): Observable<any> {
+    return this.httpService
       .doGetFile('http://localhost:3001/qr', {
         headers: new HttpHeaders({ 'Content-Type': 'image/svg+xml' }),
       })
-      .subscribe();
   }
 }
 

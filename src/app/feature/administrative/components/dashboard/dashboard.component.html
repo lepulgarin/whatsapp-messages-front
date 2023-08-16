@@ -1,10 +1,25 @@
 <div class="container">
-  <div class="card w-full">
+  <div class="card w-full" *ngIf="showSendWhatsapp; else qr">
     <h1 class="subtittle text-center">
       <strong> Enviar whatsapp </strong>
     </h1>
     <div class="flex mb-4 gap-3">
       <form class="form w-6" [formGroup]="wsForm" (ngSubmit)="sendMessage()">
+        <div class="w-full flex justify-content-between align-items-center">
+          <p class="text-left m-0">
+            Estado:
+            <strong *ngIf="wsStatus" class="text-green-400">Conectado</strong>
+            <strong *ngIf="!wsStatus" class="text-red-400">Desconectado</strong>
+          </p>
+          <div>
+            <button
+              [pTooltip]="'Escanear Qr'"
+              pButton
+              icon="pi pi-qrcode"
+              (click)="toggleQr()"
+              class="p-button-rounded p-button-text p-button-sm w-2rem h-2rem p-2"></button>
+          </div>
+        </div>
         <div class="form__control">
           <div class="p-inputgroup">
             <p-editor
@@ -83,6 +98,7 @@
             pButton
             label="Enviar mensaje"
             type="submit"
+            [disabled]="!wsStatus"
             class="w-full"></button>
         </div>
       </form>
@@ -108,7 +124,7 @@
       </div>
     </div>
     <div>
-      <div class="mb-3 flex">
+      <div class="mb-3 flex w-full">
         <button
           type="button"
           pButton
@@ -136,6 +152,14 @@
             type="file"
             class="w-full opacity-0 absolute top-0 bottom-0 cursor-pointer"
             style="font-size: 0" />
+        </button>
+        <button
+          type="button"
+          pButton
+          icon="pi pi-trash mr-2"
+          (click)="deleteAllClients()"
+          class="p-button-outlined p-button-sm p-button-danger ml-auto">
+          Borrar tabla
         </button>
       </div>
       <p-table
@@ -176,9 +200,13 @@
             <td>{{ client.phone }}</td>
             <td>{{ client.email }}</td>
             <td>{{ client.date }}</td>
-            <td>{{ client.value | currency: '$':'symbol':'1.0-0' }}</td>
-            <td>{{ client.paymentValue | currency: '$':'symbol':'1.0-0' }}</td>
-            <td>{{ client.contractValue | currency: '$':'symbol':'1.0-0' }}</td>
+            <td>{{ client.value | currency : '$' : 'symbol' : '1.0-0' }}</td>
+            <td>
+              {{ client.paymentValue | currency : '$' : 'symbol' : '1.0-0' }}
+            </td>
+            <td>
+              {{ client.contractValue | currency : '$' : 'symbol' : '1.0-0' }}
+            </td>
             <td>{{ client.var1 }}</td>
             <td>{{ client.var2 }}</td>
             <td>{{ client.var3 }}</td>
@@ -199,6 +227,25 @@
       </p-table>
     </div>
   </div>
+  <ng-template #qr>
+    <div class="card w-full">
+      <h1 class="subtittle text-center">
+        <strong> Escanear QR </strong>
+      </h1>
+      <div
+        class="flex flex-column align-items-center gap-2 justify-content-center">
+        <img [src]="qrUrl" alt="qr" class="w-15rem" />
+        <button
+          [pTooltip]="'Escanear Qr'"
+          pButton
+          icon="pi pi-qrcode mr-2"
+          (click)="toggleQr()"
+          class="p-button-rounded p-button-sm p-2">
+          Volver
+        </button>
+      </div>
+    </div>
+  </ng-template>
 </div>
 
 <p-overlayPanel

@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { WsService } from '@feature/administrative/shared/services/ws.service';
 import { DynamicDialogService } from '@shared/services/dynamic-dialog/dynamic-dialog.service';
 import { AddClientComponent } from '../add-client/add-client.component';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, switchMap, takeUntil, timer } from 'rxjs';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { IdGeneratorService } from '@feature/administrative/shared/services/id-generator.service';
 import { NotificationService } from '@shared/services/notification/notification.service';
@@ -15,6 +15,7 @@ interface Variables {
   name: string;
   value: string;
 }
+const TIMER = 6000;
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -82,14 +83,25 @@ export class DashboardComponent {
   ];
   public showImage = true;
   public imgUrl!: SafeResourceUrl;
+  public qrUrl!: SafeResourceUrl;
   public sendAll = false;
+  public wsStatus = false;
+  public showSendWhatsapp = true;
   private currentCursorPos = 0;
   private editorInstance: any;
+  private $destroy = new Subject<void>();
+  private $destroyQr = new Subject<void>();
 
   ngOnInit(): void {
     this.obtainMessage();
     this.obtainClients();
     this.downloadImage();
+    this.obtainWSStatus();
+  }
+
+  ngOnDestroy(): void {
+    this.$destroy.next();
+    this.$destroy.complete();
   }
 
   public onInit(event: any) {
@@ -233,63 +245,7 @@ export class DashboardComponent {
     this.obtainMessage();
   }
 
-  public addVariableToText(variable: string) {
-    this.editorInstance.insertText(this.currentCursorPos, variable);
-  }
-
-  private obtainMessage(): void {
-    const messages = JSON.parse(localStorage.getItem('messages') ?? '[]');
-    const message = messages.find(
-      (message: any) => message.id === this.currentMessage
-    );
-    if (message) {
-      this.wsForm.get('message')?.setValue(message.message);
-    }
-  }
-
-  private downloadImage(): void {
-    this.wsService.downloadImage().subscribe({
-      next: response => {
-        this.imgUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
-          `data:image/jpeg;base64,${response}`
-        );
-      },
-    });
-  }
-
-  private formatMessage(message: string, client: any): string {
-    if (!message) return message;
-    return message
-      .replace(/\s<\//g, '</')
-      .replace(/@name/g, client.name)
-      .replace(/@phone/g, client.phone)
-      .replace(/@email/g, client.email)
-      .replace(/@date/g, client.date)
-      .replace(/@value/g, this.convertToCurrency(client.value))
-      .replace(/@paymentValue/g, this.convertToCurrency(client.paymentValue))
-      .replace(/@contractValue/g, this.convertToCurrency(client.contractValue))
-      .replace(/@var1/g, client.var1)
-      .replace(/@var2/g, client.var2)
-      .replace(/@var3/g, client.var3)
-      .replace(/<strong>/g, ' *')
-      .replace(/<\/strong>/g, '* ')
-      .replace(/<p>/g, '')
-      .replace(/<\/p>/g, '')
-      .replace(/<em>/g, '_')
-      .replace(/&nbsp;/g, '')
-      .replace(/<\/em>/g, '_')
-      .replace(/\s{2,}/g, ' ');
-  }
-
-  private convertToCurrency(value: number): string {
-    return value.toLocaleString('es-CO', {
-      style: 'currency',
-      currency: 'COP',
-      minimumFractionDigits: 0,
-    });
-  }
-
-  exportToExcel(): void {
+  public exportToExcel(): void {
     const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(
       this.changeClientsKeys()
     );
@@ -307,22 +263,8 @@ export class DashboardComponent {
     saveAs(data, 'clientes.xlsx');
   }
 
-  private changeClientsKeys(): any[] {
-    const newClients = this.clients.map((client: Clients) => {
-      return {
-        nombre: client.name,
-        telefono: client.phone,
-        correo: client.email,
-        fecha: client.date,
-        'valor a abonar': client.value,
-        'valor a cancelar': client.paymentValue,
-        'valor de contrato': client.contractValue,
-        var1: client.var1,
-        var2: client.var2,
-        var3: client.var3,
-      };
-    });
-    return newClients;
+  public addVariableToText(variable: string) {
+    this.editorInstance.insertText(this.currentCursorPos, variable);
   }
 
   public onFileChange(event: any): void {
@@ -357,6 +299,137 @@ export class DashboardComponent {
       this.obtainClients();
     };
     fileReader.readAsArrayBuffer(file);
+  }
+
+  public deleteAllClients(): void {
+    localStorage.setItem('clients', JSON.stringify([]));
+    this.obtainClients();
+  }
+
+  public toggleQr(): void {
+    this.showSendWhatsapp = !this.showSendWhatsapp;
+    if (!this.showSendWhatsapp) {
+      this.downloadQr();
+    } else {
+      this.$destroyQr.next();
+    }
+  }
+
+  private obtainWSStatus(): void {
+    timer(0, TIMER)
+      .pipe(
+        switchMap(() => this.wsService.getStatus()),
+        takeUntil(this.$destroy)
+      )
+      .subscribe({
+        next: status => {
+          this.wsStatus = status;
+        },
+      });
+  }
+
+  private obtainMessage(): void {
+    const messages = JSON.parse(localStorage.getItem('messages') ?? '[]');
+    const message = messages.find(
+      (message: any) => message.id === this.currentMessage
+    );
+    if (message) {
+      this.wsForm.get('message')?.setValue(message.message);
+    }
+  }
+
+  private downloadImage(): void {
+    this.wsService.downloadImage().subscribe({
+      next: response => {
+        this.imgUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
+          `data:image/jpeg;base64,${response}`
+        );
+      },
+    });
+  }
+
+  private downloadQr(): void {
+    timer(0, TIMER)
+      .pipe(
+        switchMap(() => this.wsService.obtainQr()),
+        takeUntil(this.$destroyQr)
+      )
+      .subscribe({
+        next: response => {
+          this.qrUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
+            `data:image/svg+xml;base64,${response}`
+          );
+        },
+      });
+  }
+
+  public formatMessage(message: string, client: any): string {
+    if (!message) return message;
+    return message
+      .replace(/\s<\//g, '</')
+      // .replace(/\s{2,}/g, ' ')
+      .replace(/@name/g, client.name)
+      .replace(/@phone/g, client.phone)
+      .replace(/@email/g, client.email)
+      .replace(/@date/g, client.date)
+      .replace(/@value/g, this.convertToCurrency(client.value))
+      .replace(/@paymentValue/g, this.convertToCurrency(client.paymentValue))
+      .replace(/@contractValue/g, this.convertToCurrency(client.contractValue))
+      .replace(/@var1/g, client.var1)
+      .replace(/@var2/g, client.var2)
+      .replace(/@var3/g, client.var3)
+      .replace(/<strong>/g, ' *')
+      .replace(/<\/strong>/g, '* ')
+      .replace(/<\/li>/g, '')
+      .replace(/<em>/g, '_')
+      .replace(/&nbsp;/g, ' ')
+      .replace(/<\/em>/g, '_')
+      .replace(/<\/p>/g, '')
+      .replace(/<br>/g, '')
+      .replace(/<p>/, '')
+      .replace(/<p>/g, '\n')
+      .replace(/<ol>(.*?)<\/ol>/gs, (match, p1) => {
+        let items = p1
+          .split('<li>')
+          .filter((item: string) => item.trim() !== '');
+        let numberedItems = items.map(
+          (item: string, index: number) => `      ${index + 1}. ${item}`
+        );
+        return `\n${numberedItems.join('\n')}`;
+      })
+      .replace(/<ul>(.*?)<\/ul>/gs, (match, p1) => {
+        let items = p1
+          .split('<li>')
+          .filter((item: string) => item.trim() !== '');
+        let bulletItems = items.map((item: string) => `     *•* ${item.trim()}`);
+        return `\n${bulletItems.join('\n')}\n`;
+      });
+  }
+
+  private convertToCurrency(value: number): string {
+    return Number(value)?.toLocaleString('es-CO', {
+      style: 'currency',
+      currency: 'COP',
+      minimumFractionDigits: 0,
+    });
+  }
+
+  private changeClientsKeys(): any[] {
+    const newClients = this.clients.map((client: Clients) => {
+      return {
+        nombre: client.name,
+        telefono: client.phone,
+        correo: client.email,
+        fecha: client.date,
+        'valor a abonar': client.value,
+        'valor a cancelar': client.paymentValue,
+        'valor de contrato': client.contractValue,
+        var1: client.var1,
+        var2: client.var2,
+        var3: client.var3,
+      };
+    });
+    return newClients;
   }
 }
 
